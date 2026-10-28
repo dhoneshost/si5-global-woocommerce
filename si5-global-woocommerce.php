@@ -3,7 +3,7 @@
  * Plugin Name:       SI5 Global para WooCommerce
  * Plugin URI:        https://global.si5.com.br/
  * Description:       Completa os produtos pelo código de barras (GTIN/EAN) com dados do catálogo SI5 Global: título, foto, marca, NCM e CEST. Só preenche o que está vazio.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SI5G_VERSAO', '1.0.1' );
+define( 'SI5G_VERSAO', '1.0.2' );
 define( 'SI5G_ARQUIVO', __FILE__ );
 define( 'SI5G_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SI5G_URL', plugin_dir_url( __FILE__ ) );

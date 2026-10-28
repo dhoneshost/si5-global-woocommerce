@@ -268,7 +268,11 @@ class SI5G_Admin {
 		if ( 'si5g_completar' !== $acao || ! current_user_can( 'edit_products' ) ) {
 			return $volta;
 		}
-		$n = SI5G_Fila::enfileirar( $ids );
+		// confere a permissao de cada produto (ex.: autor que so edita os proprios), nao so a geral
+		$ids = array_values( array_filter( array_map( 'absint', $ids ), function ( $id ) {
+			return $id && current_user_can( 'edit_product', $id );
+		} ) );
+		$n = $ids ? SI5G_Fila::enfileirar( $ids ) : 0;
 		return add_query_arg( 'si5g_enfileirados', $n, $volta );
 	}
 

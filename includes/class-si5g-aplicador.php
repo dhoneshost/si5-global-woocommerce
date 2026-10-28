@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Aplica os dados do SI5 Global num produto. Regra de ouro: so preenche o que esta vazio - nunca troca o nome,
  * a descricao ou a foto que a loja ja cadastrou. NCM/CEST so sao trocados se a opcao "sobrescrever" estiver ligada
- * ou se o usuario pediu na mao (botao "Buscar dados agora").
+ * (vale tambem para o botao "Buscar dados agora").
  */
 class SI5G_Aplicador {
 	const META_NCM    = '_si5g_ncm';
@@ -53,9 +53,11 @@ class SI5G_Aplicador {
 		$o         = SI5G_Opcoes::todas();
 		$alterados = array();
 
-		// nome: so quando vazio, igual ao codigo ou "Produto"/rascunho automatico
-		$nome = trim( (string) $produto->get_name() );
-		if ( 'vazio' === $o['titulo'] && ! empty( $d['produto'] ) && ( '' === $nome || preg_replace( '/\D/', '', $nome ) === $gtin || in_array( mb_strtolower( $nome ), array( 'produto', 'product', 'auto rascunho', 'auto draft', 'rascunho automático' ), true ) ) ) {
+		// nome: so quando vazio, quando e SO o codigo (sem nenhuma palavra) ou "Produto"/rascunho automatico.
+		// Um nome com texto e o codigo junto ("Sabao 789...") e da loja e fica.
+		$nome     = trim( (string) $produto->get_name() );
+		$so_codigo = '' !== $nome && preg_match( '/^[\d\s.\-]+$/', $nome ) && preg_replace( '/\D/', '', $nome ) === $gtin;
+		if ( 'vazio' === $o['titulo'] && ! empty( $d['produto'] ) && ( '' === $nome || $so_codigo || in_array( mb_strtolower( $nome ), array( 'produto', 'product', 'auto rascunho', 'auto draft', 'rascunho automático' ), true ) ) ) {
 			$produto->set_name( $d['produto'] );
 			$alterados[] = __( 'nome', 'si5-global-woocommerce' );
 		}
@@ -85,7 +87,8 @@ class SI5G_Aplicador {
 		}
 
 		// NCM e CEST (so digitos, como a nota fiscal pede)
-		$sobrescrever = $manual || $o['ncm_sobrescrever'];
+		// so a opcao troca NCM/CEST ja preenchidos - o botao manual tambem a respeita
+		$sobrescrever = (bool) $o['ncm_sobrescrever'];
 		$ncm          = preg_replace( '/\D/', '', (string) ( $d['ncm'] ?? '' ) );
 		$cest         = preg_replace( '/\D/', '', (string) ( $d['cest_codigo'] ?? '' ) );
 		if ( $o['ncm'] && 8 === strlen( $ncm ) && ( $sobrescrever || '' === (string) $produto->get_meta( self::META_NCM, true ) ) ) {
@@ -131,17 +134,36 @@ class SI5G_Aplicador {
 		return $alterados;
 	}
 
-	/** Baixa a foto para a biblioteca de midia (a URL do catalogo pode nao ter extensao). */
+	/** Servidores de foto do catalogo; qualquer outro endereco e ignorado. */
+	const HOSTS_IMAGEM = array( 'global.si5.com.br', 'cdn2.si5.com.br', 'cdn3.si5.com.br' );
+
+	/**
+	 * Baixa a foto para a biblioteca de midia (a URL do catalogo pode nao ter extensao). Nao usa download_url():
+	 * o user-agent padrao do WordPress leva o endereco da loja, e o readme promete que ele nao sai daqui.
+	 */
 	private static function baixar_imagem( string $url, int $produto_id, string $titulo, string $gtin ): int {
-		if ( 0 !== strpos( $url, 'https://' ) ) {
+		$partes = wp_parse_url( $url );
+		if ( empty( $partes['scheme'] ) || 'https' !== $partes['scheme'] || empty( $partes['host'] ) || ! in_array( strtolower( $partes['host'] ), self::HOSTS_IMAGEM, true ) || isset( $partes['port'] ) || isset( $partes['user'] ) ) {
 			return 0;
 		}
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$tmp = download_url( $url, 30 );
-		if ( is_wp_error( $tmp ) ) {
+		$tmp = wp_tempnam( $gtin );
+		if ( ! $tmp ) {
+			return 0;
+		}
+		$resposta = wp_safe_remote_get( $url, array(
+			'timeout'             => 30,
+			'stream'              => true,
+			'filename'            => $tmp,
+			'redirection'         => 0,
+			'limit_response_size' => 5 * MB_IN_BYTES,
+			'user-agent'          => 'SI5Global-WooCommerce/' . SI5G_VERSAO,
+		) );
+		if ( is_wp_error( $resposta ) || 200 !== (int) wp_remote_retrieve_response_code( $resposta ) ) {
+			wp_delete_file( $tmp );
 			return 0;
 		}
 		$mime = function_exists( 'wp_get_image_mime' ) ? wp_get_image_mime( $tmp ) : '';

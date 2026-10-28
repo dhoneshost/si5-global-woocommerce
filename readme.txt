@@ -4,7 +4,7 @@ Tags: woocommerce, ncm, cest, gtin, ean
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ NCM e CEST são sugestões do catálogo, com a origem registrada. Confirme com s
 
 = Serviço externo =
 
-O plugin consulta a API `https://global.si5.com.br/api/produtos/{código}` enviando apenas o código de barras do produto e o seu token. Termos e privacidade em https://global.si5.com.br/.
+O plugin consulta a API `https://global.si5.com.br/api/produtos/{código}` enviando apenas o código de barras do produto e o seu token. As fotos são baixadas só dos servidores de imagem do SI5 Global, sem o token e sem o endereço da loja. Termos e privacidade em https://global.si5.com.br/.
 
 == Installation ==
 
@@ -39,13 +39,19 @@ O plugin consulta a API `https://global.si5.com.br/api/produtos/{código}` envia
 
 = O plugin sobrescreve meus dados? =
 
-Não. Nome, descrição e foto só são preenchidos quando estão vazios. NCM e CEST também, a não ser que você ligue a opção "Trocar NCM/CEST que já estiverem preenchidos" ou use o botão "Buscar dados agora" no produto.
+Não. Nome, descrição e foto só são preenchidos quando estão vazios. Um nome só é trocado quando é apenas o próprio código de barras (sem nenhuma palavra). NCM e CEST também só são preenchidos quando estão vazios, a não ser que você ligue a opção "Trocar NCM/CEST que já estiverem preenchidos"; o botão "Buscar dados agora" segue a mesma opção.
 
 = Quantas consultas posso fazer? =
 
 O plano gratuito permite 100 consultas por dia. Planos maiores em global.si5.com.br.
 
 == Changelog ==
+
+= 1.0.2 =
+* Nome com texto e o código junto não é mais trocado (só o nome que é apenas o código).
+* Ação em massa confere a permissão de edição de cada produto.
+* O botão "Buscar dados agora" respeita a opção de trocar NCM/CEST preenchidos.
+* Fotos baixadas só dos servidores do SI5 Global, sem enviar o endereço da loja.
 
 = 1.0.1 =
 * Códigos UPC-A (12 dígitos) agora são encontrados no catálogo.

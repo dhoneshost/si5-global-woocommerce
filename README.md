@@ -6,7 +6,8 @@ Plugin WordPress que completa os produtos da loja pelo **código de barras (GTIN
 
 ## O que faz
 
-- **Só preenche o que está vazio.** Nome, descrição e foto que a loja já cadastrou nunca são trocados.
+- **Só preenche o que está vazio.** Nome, descrição e foto que a loja já cadastrou nunca são trocados (o nome só é trocado quando é apenas o próprio código de barras).
+- **NCM e CEST preenchidos** só são trocados com a opção "Trocar NCM/CEST que já estiverem preenchidos" ligada, inclusive pelo botão manual.
 - **NCM e CEST** em campos próprios na aba *Geral* do produto, com opção de copiar para os campos do seu plugin de nota fiscal.
 - **Foto** baixada para a biblioteca de mídia quando o produto não tem imagem.
 - **Marca** na taxonomia de marcas do WooCommerce.
@@ -18,7 +19,7 @@ NCM e CEST são **sugestões do catálogo**, com a origem registrada. Confirme c
 
 ## Dados enviados
 
-O plugin consulta `https://global.si5.com.br/api/produtos/{código}` enviando **apenas o código de barras do produto e o seu token**. Nenhum outro dado da loja (clientes, pedidos, preços, endereço do site) é enviado.
+O plugin consulta `https://global.si5.com.br/api/produtos/{código}` enviando **apenas o código de barras do produto e o seu token**. As fotos são baixadas só dos servidores de imagem do SI5 Global, sem o token. Nenhum outro dado da loja (clientes, pedidos, preços, endereço do site) é enviado.
 
 ## Instalação
 
