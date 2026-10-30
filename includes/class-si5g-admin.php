@@ -74,7 +74,7 @@ class SI5G_Admin {
 							<p class="description"><?php
 								printf(
 									/* translators: %s: link */
-									esc_html__( 'Crie o token em %s (plano gratuito: 100 consultas por dia).', 'si5-global-woocommerce' ),
+									esc_html__( 'Crie o token em %s (o plano gratuito tem uma cota diária de consultas).', 'si5-global-woocommerce' ),
 									'<a href="https://global.si5.com.br/" target="_blank" rel="noopener">global.si5.com.br</a>'
 								); ?></p>
 						</td>

@@ -4,7 +4,7 @@ Tags: woocommerce, ncm, cest, gtin, ean
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,9 +43,12 @@ Não. Nome, descrição e foto só são preenchidos quando estão vazios. Um nom
 
 = Quantas consultas posso fazer? =
 
-O plano gratuito permite 100 consultas por dia. Planos maiores em global.si5.com.br.
+O plano gratuito tem uma cota diária de consultas; os limites de cada plano estão em global.si5.com.br. Código não encontrado não gasta consulta.
 
 == Changelog ==
+
+= 1.0.3 =
+* Texto do limite do plano gratuito atualizado (cota diária, sem número fixo).
 
 = 1.0.2 =
 * Nome com texto e o código junto não é mais trocado (só o nome que é apenas o código).

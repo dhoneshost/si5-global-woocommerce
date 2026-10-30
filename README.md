@@ -25,7 +25,7 @@ O plugin consulta `https://global.si5.com.br/api/produtos/{código}` enviando **
 
 1. Baixe o `.zip` em [Releases](../../releases) (ou clone esta pasta para `wp-content/plugins/si5-global-woocommerce`).
 2. Em *Plugins › Adicionar novo › Enviar plugin*, envie o `.zip` e ative.
-3. Crie uma conta e um token em global.si5.com.br (*Minha conta*). O plano gratuito permite 100 consultas por dia.
+3. Crie uma conta e um token em global.si5.com.br (*Minha conta*). O plano gratuito tem uma cota diária de consultas (veja os limites de cada plano em global.si5.com.br).
 4. Em *WooCommerce › SI5 Global*, cole o token, use **Testar conexão** e depois **Completar agora** ou a ação em massa.
 
 Requisitos: WordPress 6.4+, WooCommerce 8.0+, PHP 7.4+.
